@@ -65,5 +65,5 @@ jobs:
       uses: actions/upload-artifact@main
       with:
         name: linux
-        path: linux
+        path: /workdir
 
