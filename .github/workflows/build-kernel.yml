@@ -58,12 +58,54 @@ jobs:
         make msm8916_defconfig
         make -j$(nproc)
         fakeroot make-kpkg --initrd --cross-compile aarch64-linux-gnu- --arch arm64 kernel_image kernel_headers modules_image
-        cp arch/arm64/boot/Image.gz /workdir
-        cp arch/arm64/boot/dts/qcom/msm8916-yiming-uz801v3.dtb /workdir
+        mkdir -p /linux /rootfs
+        cp arch/arm64/boot/Image.gz /linux
+        cp arch/arm64/boot/dts/qcom/msm8916-yiming-uz801v3.dtb /linux
+        cp *.deb /linux
+        pushd /linux
+        git clone https://salsa.debian.org/Mobian-team/mobile-usb-networking --depth=1 && cd ./mobile-usb-networking && git checkout 056d9215bb38697b9dc59ba256fc6e904ee5923d && cd ..
+        git clone https://github.com/hyx0329/openstick-failsafe-guard --depth=1 && cd ./openstick-failsafe-guard && git checkout 07a8cc6e2558411f746a3cf529c7565dc88668ba && cd ..
+        wget http://ports.ubuntu.com/pool/multiverse/l/linux-firmware-snapdragon/linux-firmware-snapdragon_1.3-0ubuntu3_arm64.deb
+        popd
+        truncate -s 1024M /linux/rootfs_base.ext4
+        mkfs.ext4 /linux/rootfs_base.ext4
+        sleep 5
+        mount /linux/rootfs_base.ext4 /rootfs
+        export DEBIAN_VERSION=bullseye
+        debootstrap --arch=arm64 --include openssh-server,nano,wget,initramfs-tools,cron,wpasupplicant,init,dbus,dnsmasq,ca-certificates,gawk $DEBIAN_VERSION /rootfs http://deb.debian.org/debian/
+        mount --bind / /rootfs/mnt
+        mount --bind /proc /rootfs/proc 
+        mount --bind /dev /rootfs/dev
+        mount --bind /dev/pts /rootfs/dev/pts
+        mount --bind /sys /rootfs/sys
+        mkdir -p /rootfs/config
+        mkdir -p /rootfs/output
+        mount --bind /config /rootfs/config
+        mount --bind /output /rootfs/output
+        chroot /rootfs /bin/bash /config/provision.sh
+        cat /linux/Image.gz /linux/msm8916-handsome-openstick-uz801.dtb > /linux/kernel-dtb
+        mkbootimg \
+           --base 0x80000000\
+           --kernel_offset 0x00080000\
+           --ramdisk_offset 0x02000000\
+           --tags_offset 0x01e00000\
+           --pagesize 2048\
+           --second_offset 0x00f00000\
+           --ramdisk /rootfs/boot/initrd.img-*\
+           --cmdline "earlycon root=PARTUUID=a7ab80e8-e9d1-e8cd-f157-93f69b1d141e console=ttyMSM0,115200 no_framebuffer=true rw"\
+           --kernel /linux/kernel-dtb\
+           -o /linux/boot.img
+        sync
+        sleep 5
+        umount -f /rootfs/* || true
+        umount -f /rootfs || true
+        sleep 5
+        img2simg /linux/rootfs.ext4 /linux/rootfs.img
+
 
     - name: Upload linux directory
       uses: actions/upload-artifact@main
       with:
         name: linux
-        path: /workdir
+        path: /linux
 
