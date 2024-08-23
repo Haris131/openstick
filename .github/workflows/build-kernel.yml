@@ -64,5 +64,5 @@ jobs:
       uses: actions/upload-artifact@main
       with:
         name: linux
-        path: $GITHUB_WORKSPACE
+        path: linux
 
