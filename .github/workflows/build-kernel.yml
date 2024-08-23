@@ -52,6 +52,7 @@ jobs:
       run: |
         cp $GITHUB_WORKSPACE/msm8916_defconfig linux/arch/arm64/configs/msm8916_defconfig
         cd linux
+        sed -i "s/Handsome OpenStick UZ801/Chewy Mage UZ801 V3.2/g" arch/arm64/boot/dts/qcom/msm8916-handsome-openstick-uz801.dts
         export CROSS_COMPILE=aarch64-linux-gnu-
         export ARCH=arm64
         make clean
@@ -60,7 +61,7 @@ jobs:
         fakeroot make-kpkg --initrd --cross-compile aarch64-linux-gnu- --arch arm64 kernel_image kernel_headers modules_image
         mkdir -p /linux /rootfs
         cp arch/arm64/boot/Image.gz /linux
-        cp arch/arm64/boot/dts/qcom/msm8916-yiming-uz801v3.dtb /linux
+        cp arch/arm64/boot/dts/qcom/msm8916-handsome-openstick-uz801.dtb /linux
         cp *.deb /linux
         pushd /linux
         git clone https://salsa.debian.org/Mobian-team/mobile-usb-networking --depth=1 && cd ./mobile-usb-networking && git checkout 056d9215bb38697b9dc59ba256fc6e904ee5923d && cd ..
@@ -92,7 +93,7 @@ jobs:
            --pagesize 2048\
            --second_offset 0x00f00000\
            --ramdisk /rootfs/boot/initrd.img-*\
-           --cmdline "earlycon root=PARTUUID=a7ab80e8-e9d1-e8cd-f157-93f69b1d141e console=ttyMSM0,115200 no_framebuffer=true rw"\
+           --cmdline "earlycon console=tty0 console=ttyMSM0,115200 root=/dev/mmcblk0p14 rw rootwait"\
            --kernel /linux/kernel-dtb\
            -o /linux/boot.img
         sync
