@@ -72,7 +72,7 @@ jobs:
         mkfs.ext4 /linux/rootfs_base.ext4
         sleep 5
         sudo mount /linux/rootfs_base.ext4 /rootfs
-        sudo export DEBIAN_VERSION=bullseye
+        export DEBIAN_VERSION=bullseye
         debootstrap --arch=arm64 --include openssh-server,nano,wget,initramfs-tools,cron,wpasupplicant,init,dbus,dnsmasq,ca-certificates,gawk $DEBIAN_VERSION /rootfs http://deb.debian.org/debian/
         sudo mount --bind / /rootfs/mnt
         sudo mount --bind /proc /rootfs/proc 
