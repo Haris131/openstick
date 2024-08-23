@@ -59,7 +59,7 @@ jobs:
         make msm8916_defconfig
         make -j$(nproc)
         fakeroot make-kpkg --initrd --cross-compile aarch64-linux-gnu- --arch arm64 kernel_image kernel_headers modules_image
-        mkdir -p /linux /rootfs
+        sudo mkdir -p /linux /rootfs
         cp arch/arm64/boot/Image.gz /linux
         cp arch/arm64/boot/dts/qcom/msm8916-handsome-openstick-uz801.dtb /linux
         cp *.deb /linux
@@ -71,18 +71,17 @@ jobs:
         truncate -s 1024M /linux/rootfs_base.ext4
         mkfs.ext4 /linux/rootfs_base.ext4
         sleep 5
-        mount /linux/rootfs_base.ext4 /rootfs
-        export DEBIAN_VERSION=bullseye
+        sudo mount /linux/rootfs_base.ext4 /rootfs
+        sudo export DEBIAN_VERSION=bullseye
         debootstrap --arch=arm64 --include openssh-server,nano,wget,initramfs-tools,cron,wpasupplicant,init,dbus,dnsmasq,ca-certificates,gawk $DEBIAN_VERSION /rootfs http://deb.debian.org/debian/
-        mount --bind / /rootfs/mnt
-        mount --bind /proc /rootfs/proc 
-        mount --bind /dev /rootfs/dev
-        mount --bind /dev/pts /rootfs/dev/pts
-        mount --bind /sys /rootfs/sys
-        mkdir -p /rootfs/config
-        mkdir -p /rootfs/output
-        mount --bind /config /rootfs/config
-        mount --bind /output /rootfs/output
+        sudo mount --bind / /rootfs/mnt
+        sudo mount --bind /proc /rootfs/proc 
+        sudo mount --bind /dev /rootfs/dev
+        sudo mount --bind /dev/pts /rootfs/dev/pts
+        sudo mount --bind /sys /rootfs/sys
+        sudo mkdir -p /rootfs/config /rootfs/output
+        sudo mount --bind /config /rootfs/config
+        sudo mount --bind /output /rootfs/output
         chroot /rootfs /bin/bash /config/provision.sh
         cat /linux/Image.gz /linux/msm8916-handsome-openstick-uz801.dtb > /linux/kernel-dtb
         mkbootimg \
@@ -98,8 +97,8 @@ jobs:
            -o /linux/boot.img
         sync
         sleep 5
-        umount -f /rootfs/* || true
-        umount -f /rootfs || true
+        sudo umount -f /rootfs/* || true
+        sudo umount -f /rootfs || true
         sleep 5
         img2simg /linux/rootfs.ext4 /linux/rootfs.img
 
