@@ -60,16 +60,16 @@ jobs:
         make -j$(nproc)
         fakeroot make-kpkg --initrd --cross-compile aarch64-linux-gnu- --arch arm64 kernel_image kernel_headers modules_image
         sudo mkdir -p /linux /rootfs
-        cp arch/arm64/boot/Image.gz /linux
-        cp arch/arm64/boot/dts/qcom/msm8916-handsome-openstick-uz801.dtb /linux
-        cp *.deb /linux
-        pushd /linux
+        sudo cp arch/arm64/boot/Image.gz /linux
+        sudo cp arch/arm64/boot/dts/qcom/msm8916-handsome-openstick-uz801.dtb /linux
+        sudo cp *.deb /linux
+        sudo pushd /linux
         git clone https://salsa.debian.org/Mobian-team/mobile-usb-networking --depth=1 && cd ./mobile-usb-networking && git checkout 056d9215bb38697b9dc59ba256fc6e904ee5923d && cd ..
         git clone https://github.com/hyx0329/openstick-failsafe-guard --depth=1 && cd ./openstick-failsafe-guard && git checkout 07a8cc6e2558411f746a3cf529c7565dc88668ba && cd ..
         wget http://ports.ubuntu.com/pool/multiverse/l/linux-firmware-snapdragon/linux-firmware-snapdragon_1.3-0ubuntu3_arm64.deb
         popd
-        truncate -s 1024M /linux/rootfs_base.ext4
-        mkfs.ext4 /linux/rootfs_base.ext4
+        sudo truncate -s 1024M /linux/rootfs_base.ext4
+        sudo mkfs.ext4 /linux/rootfs_base.ext4
         sleep 5
         sudo mount /linux/rootfs_base.ext4 /rootfs
         export DEBIAN_VERSION=bullseye
@@ -83,7 +83,7 @@ jobs:
         sudo mount --bind /config /rootfs/config
         sudo mount --bind /output /rootfs/output
         chroot /rootfs /bin/bash /config/provision.sh
-        cat /linux/Image.gz /linux/msm8916-handsome-openstick-uz801.dtb > /linux/kernel-dtb
+        sudo cat /linux/Image.gz /linux/msm8916-handsome-openstick-uz801.dtb > /linux/kernel-dtb
         mkbootimg \
            --base 0x80000000\
            --kernel_offset 0x00080000\
