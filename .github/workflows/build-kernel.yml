@@ -52,7 +52,7 @@ jobs:
       run: |
         cp $GITHUB_WORKSPACE/msm8916_defconfig linux/arch/arm64/configs/msm8916_defconfig
         cd linux
-        sed -i "s/Handsome OpenStick UZ801/Chewy Mage UZ801 V3.2/g" arch/arm64/boot/dts/qcom/msm8916-handsome-openstick-uz801.dts
+        #sed -i "s/Handsome OpenStick UZ801/Chewy Mage UZ801 V3.2/g" arch/arm64/boot/dts/qcom/msm8916-handsome-openstick-uz801.dts
         export CROSS_COMPILE=aarch64-linux-gnu-
         export ARCH=arm64
         make clean
