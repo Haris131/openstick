@@ -51,13 +51,9 @@ jobs:
         make LOCALVERSION= Image modules dtbs -j$(nproc)
         sudo make LOCALVERSION= INSTALL_MOD_PATH=modules modules_install
         sudo mv /workdir/linux/arch/arm64/boot/Image /workdir/kernel
+        sudo gzip /workdir/kernel/Image
         sudo mv /workdir/linux/arch/arm64/boot/dts/qcom/*uz801*.dtb /workdir/kernel
         (cd /workdir/linux/modules/lib/modules && sudo tar cfz /workdir/kernel/modules.tar.gz *)
-        cd /workdir/kernel
-        sudo gzip Image
-        sudo touch fake-kernel
-        sudo cat Image.gz *.dtb > kernel-dtb
-        sudo mkbootimg --base 0x80000000 --kernel_offset 0x00080000 --ramdisk_offset 0x02000000 --tags_offset 0x01e00000 --pagesize 2048 --second_offset 0x00f00000 --ramdisk fake-kernel --cmdline "earlycon console=tty0 console=ttyMSM0,115200 root=/dev/mmcblk0p14 rw rootwait" --kernel kernel-dtb -o boot.img
 
     - name: Upload linux directory
       uses: actions/upload-artifact@main
