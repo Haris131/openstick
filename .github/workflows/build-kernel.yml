@@ -48,7 +48,6 @@ jobs:
         ln -sf /workdir/linux $GITHUB_WORKSPACE/linux
 
     - name: Compile kernel
-      id: compile
       run: |
         cp $GITHUB_WORKSPACE/msm8916_defconfig linux/arch/arm64/configs/msm8916_defconfig
         cd linux
@@ -64,10 +63,6 @@ jobs:
         sudo mv /workdir/linux/arch/arm64/boot/Image* /workdir/kernel
         sudo mv /workdir/linux/arch/arm64/boot/dts/qcom/*uz801*.dtb /workdir/kernel
         (cd /workdir/linux/modules/lib/modules && sudo tar cfz /workdir/kernel/modules.tar.gz *)
-
-    - name: Build boot.img
-      id: 
-      run: |
         cd /workdir/kernel
         gzip Image
         touch fake-kernel
