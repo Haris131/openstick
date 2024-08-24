@@ -66,7 +66,7 @@ jobs:
         cd /workdir/kernel
         sudo gzip Image
         sudo touch fake-kernel
-        sudo cat Image.gz *.dtb > boot.img
+        sudo cat Image.gz *.dtb > kernel-dtb
         sudo mkbootimg --base 0x80000000 --kernel_offset 0x00080000 --ramdisk_offset 0x02000000 --tags_offset 0x01e00000 --pagesize 2048 --second_offset 0x00f00000 --ramdisk fake-kernel --cmdline "earlycon console=tty0 console=ttyMSM0,115200 root=/dev/mmcblk0p14 rw rootwait" --kernel kernel-dtb -o boot.img
 
     - name: Upload linux directory
