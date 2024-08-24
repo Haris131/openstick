@@ -58,8 +58,7 @@ jobs:
         make LOCALVERSION= mrproper
         make msm8916_defconfig
         make LOCALVERSION= Image modules dtbs -j$(nproc)
-        sudo mkdir modules
-        make LOCALVERSION= INSTALL_MOD_PATH=modules modules_install
+        make LOCALVERSION= INSTALL_MOD_PATH=/workdir/kernel modules_install
         sudo mv /workdir/linux/arch/arm64/boot/Image /workdir/kernel
         sudo mv /workdir/linux/arch/arm64/boot/dts/qcom/*uz801*.dtb /workdir/kernel
         (cd /workdir/linux/modules/lib/modules && sudo tar cfz /workdir/kernel/modules.tar.gz *)
