@@ -36,9 +36,9 @@ jobs:
         df -hT $PWD
         #git clone --depth=1 https://github.com/HandsomeMod/linux-msm linux
         wget -q https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.10.224.tar.xz
-        unxz linux-*.tar.xz
-        tar xf linux-*.tar
-        mv linux-* linux
+        unxz linux-5.10.224.tar.xz
+        tar xf linux-5.10.224.tar
+        mv linux-5.10.224 linux
         ln -sf /workdir/linux $GITHUB_WORKSPACE/linux
 
     - name: Compile kernel
