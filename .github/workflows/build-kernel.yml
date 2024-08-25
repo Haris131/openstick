@@ -35,7 +35,7 @@ jobs:
       run: |
         df -hT $PWD
         #git clone --depth=1 https://github.com/HandsomeMod/linux-msm linux
-        wget -q https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.6.47.tar.xz
+        wget -q https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.10.224.tar.xz
         unxz linux-*.tar.xz
         tar xf linux-*.tar
         mv linux-* linux
