@@ -34,7 +34,7 @@ jobs:
       working-directory: /workdir
       run: |
         df -hT $PWD
-        git clone --depth=1 https://github.com/HandsomeMod/linux-msm linux
+        git clone --depth=1 https://github.com/sib0ndt/linux-6.6.6 linux
         ln -sf /workdir/linux $GITHUB_WORKSPACE/linux
 
     - name: Compile kernel
@@ -45,10 +45,10 @@ jobs:
         # sed -i "s/Handsome OpenStick UZ801/Chewy Mage UZ801 V3.2/g" arch/arm64/boot/dts/qcom/*uz801*.dts
         export CROSS_COMPILE=aarch64-linux-gnu-
         export ARCH=arm64
-        export LOCALVERSION=
-        make LOCALVERSION= mrproper
+        export LOCALVERSION=-chewy
+        make LOCALVERSION=-chewy mrproper
         make msm8916_defconfig
-        make LOCALVERSION= Image modules dtbs -j$(nproc)
+        make LOCALVERSION=-chewy Image modules dtbs -j$(nproc)
         sudo make LOCALVERSION= INSTALL_MOD_PATH=modules modules_install
         sudo mv /workdir/linux/arch/arm64/boot/Image /workdir/kernel
         sudo gzip /workdir/kernel/Image
