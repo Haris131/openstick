@@ -39,7 +39,7 @@ jobs:
 
     - name: Compile kernel
       run: |
-        # cp $GITHUB_WORKSPACE/msm8916_defconfig linux/arch/arm64/configs/msm8916_defconfig
+        cp $GITHUB_WORKSPACE/msm8916_defconfig linux/arch/arm64/configs/msm8916_defconfig
         cd linux
         sudo mkdir modules
         # sed -i "s/Handsome OpenStick UZ801/Chewy Mage UZ801 V3.2/g" arch/arm64/boot/dts/qcom/*uz801*.dts
@@ -47,8 +47,7 @@ jobs:
         export ARCH=arm64
         export LOCALVERSION=
         make LOCALVERSION= mrproper
-        # make msm8916_defconfig
-        make handsome_defconfig
+        make msm8916_defconfig
         make LOCALVERSION= Image modules dtbs -j$(nproc)
         sudo make LOCALVERSION= INSTALL_MOD_PATH=modules modules_install
         sudo mv /workdir/linux/arch/arm64/boot/Image /workdir/kernel
